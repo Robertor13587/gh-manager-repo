@@ -154,7 +154,13 @@ export default function Dashboard() {
       <header className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
         <div className="w-full px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-black dark:text-white">GitHub Project Manager</h1>
+            <div className="flex items-center gap-2">
+              <picture>
+                <source media="(prefers-color-scheme: dark)" srcSet="/logo-dark.svg" />
+                <img src="/logo.svg" alt="GitHub Project Manager" className="w-8 h-8" />
+              </picture>
+              <h1 className="text-xl font-bold text-black dark:text-white">GitHub Project Manager</h1>
+            </div>
             <span className="text-sm text-gray-400">{repositories.length} projects</span>
           </div>
           <div className="flex items-center gap-3">

@@ -28,6 +28,10 @@ export default function Home() {
     <div className="flex flex-col flex-1 items-center justify-center bg-white dark:bg-black min-h-screen">
       <main className="flex flex-col items-center justify-center gap-8 text-center max-w-md px-6">
         <div className="space-y-3">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcSet="/logo-dark.svg" />
+            <img src="/logo.svg" alt="GitHub Project Manager" className="w-24 h-24 mx-auto mb-4" />
+          </picture>
           <h1 className="text-4xl font-bold text-black dark:text-white">GitHub Project Manager</h1>
           <p className="text-gray-600 dark:text-gray-400">
             Track and manage your GitHub projects. Monitor MVP and completed status automatically.

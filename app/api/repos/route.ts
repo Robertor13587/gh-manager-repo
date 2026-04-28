@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth'
 import { GitHubClient } from '@/lib/github'
 import { determineStatus } from '@/lib/status'
 import * as dbUtils from '@/lib/db-utils'
 
 export async function GET(_req: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -27,7 +28,7 @@ export async function GET(_req: NextRequest) {
 
 export async function POST(_req: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

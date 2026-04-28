@@ -73,12 +73,14 @@ export async function POST(_req: NextRequest) {
         })
       }
 
-      const status = determineStatus(fileMap, dbRepo.mvpFiles, dbRepo.releaseFiles)
-
       const mvpContent = fileMap['MVP.md'] ?? fileMap['mvp.md'] ?? ''
       const mvpLines = mvpContent.split('\n').filter((l) => /^[-*]\s+\[[x ]\]/i.test(l.trim()))
       const mvpDone = mvpLines.filter((l) => /^[-*]\s+\[x\]/i.test(l.trim())).length
       const mvpTotal = mvpLines.length
+
+      let status = determineStatus(fileMap, dbRepo.mvpFiles, dbRepo.releaseFiles)
+      // If MVP checklist exists and is 100% done → promote to COMPLETED
+      if (mvpTotal > 0 && mvpDone === mvpTotal) status = 'COMPLETED'
 
       await dbUtils.updateRepositoryStatus(dbRepo.id, status, Date.now(), mvpDone, mvpTotal)
     }

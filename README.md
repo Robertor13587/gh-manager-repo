@@ -1,26 +1,30 @@
 # GitHub Project Manager
 
-Una piattaforma web per gestire e monitorare automaticamente i tuoi progetti GitHub, tracciando lo stato (MVP vs Completato) basandosi sulla presenza di file specifici di documentazione.
+Una piattaforma web moderna per gestire e monitorare automaticamente i tuoi progetti GitHub, tracciando lo stato (MVP vs Completato) basandosi sulla presenza di file specifici di documentazione e metriche.
 
-## Caratteristiche
+## ✨ Caratteristiche Principali
 
-- 🔐 **Autenticazione GitHub OAuth**: Accedi in sicurezza con il tuo account GitHub
-- 📦 **Sincronizzazione automatica**: Monitora i tuoi repository in background
-- 📊 **Dashboard interattiva**: Visualizza tutti i tuoi progetti con il loro stato
-- 🏷️ **Status tracking**: Rileva automaticamente se un progetto è MVP, Completato o In Progress
-- 📄 **Analisi file**: Legge README, CHANGELOG e altri file per determinare lo stato
-- 🔄 **Sincronizzazione manuale**: Aggiorna i tuoi progetti on-demand
+- 🔐 **Autenticazione GitHub OAuth** - Accedi in sicurezza con il tuo account GitHub
+- 📦 **Sincronizzazione automatica** - Monitora i tuoi repository in background
+- 📊 **Dashboard interattiva** - Visualizza tutti i tuoi progetti con il loro stato e progress
+- 🏷️ **Status tracking automatico** - Rileva automaticamente se un progetto è MVP, Completato o In Progress
+- 📈 **Progress bars MVP** - Traccia il completamento delle checklist MVP con barre di progresso visive
+- 📄 **Analisi file avanzata** - Legge README, CHANGELOG, MVP.md e RELEASE.md per determinare lo stato
+- 🎨 **Interfaccia responsive** - Design moderno con temi light/dark
+- 🔄 **Sincronizzazione manuale** - Aggiorna i tuoi progetti on-demand
+- 📱 **Full-width detail pages** - Visualizzazione dettagliata con timeline changelog e MVP checklist
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 13+ (React)
+- **Frontend**: Next.js 16.2 (React 19)
 - **Backend**: Next.js API Routes
-- **Database**: SQLite (file-based, senza server!)
-- **Autenticazione**: NextAuth.js con GitHub OAuth
-- **Styling**: Tailwind CSS
-- **API GitHub**: Octokit
+- **Database**: PostgreSQL con Postgres client
+- **Autenticazione**: NextAuth.js 4.24 con GitHub OAuth
+- **Styling**: Tailwind CSS 4
+- **API GitHub**: Octokit 5.0
+- **TypeScript**: Per type safety completo
 
-## Setup Rapido
+## 🚀 Setup Rapido
 
 ### 1. Configura le variabili d'ambiente
 
@@ -35,12 +39,19 @@ GITHUB_CLIENT_SECRET=your_client_secret
 NEXTAUTH_SECRET=your_secret_here
 NEXTAUTH_URL=http://localhost:3000
 
+# Database PostgreSQL
+DATABASE_URL=postgresql://user:password@localhost:5432/github_manager
+
 NODE_ENV=development
 ```
 
-**Nota**: Il database SQLite verrà creato automaticamente in `data/github-manager.db` al primo avvio. Non serve configurazione!
+### 2. Installa le dipendenze
 
-### 2. Avvia il server di sviluppo
+```bash
+npm install
+```
+
+### 3. Avvia il server di sviluppo
 
 ```bash
 npm run dev
@@ -48,97 +59,149 @@ npm run dev
 
 Apri [http://localhost:3000](http://localhost:3000) nel browser.
 
-## Come funziona
+## 📖 Come funziona
 
-1. **Login con GitHub**: Autorizza l'app per accedere ai tuoi repository pubblici
-2. **Sincronizza**: Clicca "Sync Now" per recuperare i tuoi progetti
-3. **Analizza**: L'app legge README, CHANGELOG, MVP.md e RELEASE.md per determinare lo stato
-4. **Visualizza**: Guarda la dashboard con tutti i progetti e il loro stato
+1. **Login con GitHub** - Autorizza l'app per accedere ai tuoi repository pubblici
+2. **Sincronizza** - Clicca "Sync Now" per recuperare i tuoi progetti
+3. **Analizza** - L'app legge README, CHANGELOG, MVP.md e RELEASE.md per determinare lo stato
+4. **Visualizza** - Guarda la dashboard con tutti i progetti raggruppati per stato
 
-## Determinazione dello Stato
+## 🎯 Determinazione dello Stato
 
 L'app automaticamente assegna uno stato basandosi su:
 
-- **COMPLETED**: File `RELEASE.md` o versione >= 1.0.0
-- **MVP**: File `MVP.md` o versione < 1.0.0 (0.x.x)
-- **IN_PROGRESS**: Nessuno dei file precedenti
+- **COMPLETED** ✅ - File `RELEASE.md` presente oppure versione >= 1.0.0
+- **MVP** 🚀 - File `MVP.md` presente oppure versione < 1.0.0 (0.x.x)
+- **IN_PROGRESS** ⚙️ - Nessuno dei file precedenti
 
-## Struttura del Progetto
+### MVP Checklist
+Quando un progetto è in stato MVP, l'app calcola automaticamente la percentuale di completamento basata su:
+- Numero di task completate nella checklist MVP.md
+- Visualizzazione come barra di progresso sulla dashboard e nella pagina di dettaglio
+
+## 📁 Struttura del Progetto
 
 ```
 ├── app/
-│   ├── page.tsx              # Login page
-│   ├── dashboard/page.tsx    # Dashboard
-│   ├── dashboard/[repoId]/   # Dettagli progetto
-│   └── api/repos/            # API endpoints
+│   ├── page.tsx                    # Login page
+│   ├── layout.tsx                  # Root layout
+│   ├── dashboard/
+│   │   ├── page.tsx               # Dashboard principale (lista progetti)
+│   │   └── [repoId]/
+│   │       └── page.tsx           # Dettagli progetto
+│   └── api/
+│       ├── auth/[...nextauth]/    # NextAuth routes
+│       └── repos/                 # Repository API endpoints
 ├── lib/
-│   ├── db.ts                 # Prisma client
-│   ├── github.ts             # GitHub API
-│   ├── status.ts             # Status detection
-│   └── sync-cron.ts          # Background sync
-├── prisma/schema.prisma      # Database schema
-└── public/                   # Static files
+│   ├── auth.ts                    # NextAuth configuration
+│   ├── db.ts                      # Database client
+│   ├── github.ts                  # GitHub API utilities
+│   └── status.ts                  # Status detection logic
+├── components/                    # React components
+├── public/                        # Static files (logos, favicon)
+├── prisma/                        # Database schema
+└── docs/                          # Documentation files
 ```
 
-## API Endpoints
+## 🔌 API Endpoints
 
-### GET /api/repos
-Lista di repository con status
+### Repository Management
 
-### POST /api/repos
-Sincronizza i repository da GitHub
+**GET /api/repos**
+- Lista tutti i repository con status
+- Returns: Array di repository con status, mvp_done, mvp_total
 
-### GET /api/repos/[id]
-Dettagli di un repository specifico
+**POST /api/repos**
+- Sincronizza i repository da GitHub
+- Analizza file e calcola progress
+- Returns: Array di repository sincronizzati
 
-## Deployment
+**GET /api/repos/[id]**
+- Dettagli di un repository specifico
+- Include: README, CHANGELOG, MVP checklist
+- Returns: Repository details con contenuti dei file
+
+## 🎨 Dashboard Features
+
+- **Raggruppamento per status** - Sezioni separate per In Progress, MVP, Completed
+- **Card progressive** - Mini progress bar per progetti MVP
+- **Ordinamento** - Progetti ordinati per data ultimo sync
+- **Responsive grid** - Layout da 1 a 5 colonne a seconda della risoluzione
+- **Tema light/dark** - Logo brandizzato responsive
+
+## 📄 Detail Page Features
+
+- **Full-width layout** - 2 colonne: MVP checklist + Changelog timeline
+- **MVP Checklist** - Visualizzazione dei task con checkbox, progress bar
+- **Changelog Timeline** - Timeline visuale di tutti i release
+- **README Summary** - Anteprima del README principale
+- **GitHub Links** - Link diretti al repository
+
+## 🚀 Deployment
 
 ### Su Vercel
+
 ```bash
-# Push su GitHub, connetti in Vercel Dashboard
-# Configura le variabili d'ambiente (GITHUB_CLIENT_ID, etc) e deploy
-# SQLite verrà creato automaticamente nel filesystem di Vercel
+# 1. Connetti il repo su Vercel Dashboard
+# 2. Configura le variabili d'ambiente
+# 3. Configura il database PostgreSQL (es: Vercel Postgres)
+# 4. Deploy
 ```
 
 ### Su un Server/VPS
+
 ```bash
 npm install
 npm run build
 npm start
 ```
 
-**Nota**: SQLite salva i dati nel filesystem. Assicurati di fare backup della cartella `data/` se usi questo su un server di produzione.
+**Nota**: PostgreSQL deve essere disponibile. Assicurati di gestire backups regolari del database.
 
-## Sincronizzazione Automatica
+## 🔄 Sincronizzazione Automatica
 
-### Option 1: Node-cron (attivo in produzione)
-Il file `lib/sync-cron.ts` è configurato per sincronizzare ogni 6 ore
+L'app supporta la sincronizzazione automatica tramite:
 
-### Option 2: Vercel Crons
-Crea `vercel.json`:
-```json
-{
-  "crons": [{
-    "path": "/api/cron/sync",
-    "schedule": "0 */6 * * *"
-  }]
-}
-```
+- **Manual sync**: Button "Sync Now" sulla dashboard
+- **API sync**: POST /api/repos
+- **NextAuth hooks**: Token refresh automatico al re-login
 
-## Troubleshooting
+## 🐛 Troubleshooting
 
-**Database connection failed**
+### Database connection failed
 - Verifica che PostgreSQL è in esecuzione
 - Controlla `DATABASE_URL` in `.env.local`
+- Verifica credenziali database
 
-**GitHub token not found**
+### GitHub token not found
 - Accedi di nuovo
 - Verifica credenziali GitHub OAuth
+- Controlla scopes dell'app GitHub
 
-**Repository non si sincronizza**
+### Repository non si sincronizza
 - Clicca "Sync Now"
 - Verifica i log della console per errori
+- Controlla che il token GitHub ha permessi sufficienti
 
-## License
+### Timestamp non visualizzati correttamente
+- L'app converte automaticamente epoch seconds a Date
+- Verifica che lastSyncedAt sia in secondi (epoch)
+
+## 📊 Monitoraggio
+
+- Tutti i repository sincronizzati vengono salvati nel database
+- Tracking di: status, versione, data ultimo sync, MVP progress
+- API ready per integrazioni esterne
+
+## 📝 License
 
 MIT
+
+## 👤 Autore
+
+Rob
+
+---
+
+**Ultima modifica**: 2026-04-28
+**Versione**: 0.1.0 (MVP)

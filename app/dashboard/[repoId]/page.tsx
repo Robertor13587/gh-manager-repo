@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
@@ -22,7 +22,8 @@ interface Repository {
   files: ProjectFile[]
 }
 
-export default function ProjectDetails({ params }: { params: { repoId: string } }) {
+export default function ProjectDetails() {
+  const { repoId } = useParams() as { repoId: string }
   const { data: session, status } = useSession()
   const router = useRouter()
   const [repository, setRepository] = useState<Repository | null>(null)
@@ -44,7 +45,7 @@ export default function ProjectDetails({ params }: { params: { repoId: string } 
   const fetchRepository = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`/api/repos/${params.repoId}`)
+      const res = await fetch(`/api/repos/${repoId}`)
       if (res.ok) {
         const data = await res.json()
         setRepository(data)
@@ -127,7 +128,7 @@ export default function ProjectDetails({ params }: { params: { repoId: string } 
             <p className="text-gray-600 dark:text-gray-400">
               <strong>Last Synced:</strong>{' '}
               {repository.lastSyncedAt
-                ? new Date(repository.lastSyncedAt).toLocaleString()
+                ? new Date(Number(repository.lastSyncedAt) * 1000).toLocaleString()
                 : 'Never'}
             </p>
             <a

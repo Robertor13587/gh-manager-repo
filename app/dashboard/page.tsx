@@ -152,7 +152,7 @@ export default function Dashboard() {
 
                 <div className="text-xs text-gray-500 dark:text-gray-500 mb-3">
                   {repo.lastSyncedAt ? (
-                    <>Last synced: {new Date(repo.lastSyncedAt).toLocaleDateString()}</>
+                    <>Last synced: {new Date(Number(repo.lastSyncedAt) * 1000).toLocaleDateString()}</>
                   ) : (
                     <>Never synced</>
                   )}
@@ -166,7 +166,7 @@ export default function Dashboard() {
                     href={repo.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={(e) => e.preventDefault()}
+                    onClick={(e) => e.stopPropagation()}
                     className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -25,9 +25,10 @@ export class GitHubClient {
 
   async getUserRepositories() {
     try {
-      const { data } = await this.octokit.rest.repos.listForAuthenticatedUser({
-        per_page: 100,
-      })
+      const data = await this.octokit.paginate(
+        this.octokit.rest.repos.listForAuthenticatedUser,
+        { per_page: 100, type: 'all', sort: 'updated' }
+      )
       return data as GitHubRepo[]
     } catch (error) {
       console.error('Error fetching repositories:', error)

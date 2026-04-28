@@ -98,16 +98,9 @@ Creare una piattaforma web funzionale per sincronizzare e tracciare automaticame
 
 Questi items sono out-of-scope per MVP ma buoni candidati per future versioni:
 
-- [ ] Sincronizzazione automatica via cron jobs
-- [ ] Notifiche push/email per cambamenti di stato
 - [ ] Filtri e ricerca avanzata sulla dashboard
 - [ ] Statistiche e analytics (trends, velocità di completamento)
-- [ ] Export dati (CSV, JSON)
-- [ ] GitHub Actions integration
 - [ ] Custom labels e categorizzazione
-- [ ] Collaborazione multi-user
-- [ ] Dark mode persisted preferences
-- [ ] Mobile app nativa
 
 ---
 

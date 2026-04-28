@@ -9,6 +9,9 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GITHUB_CLIENT_ID || '',
       clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
       allowDangerousEmailAccountLinking: true,
+      authorization: {
+        params: { scope: 'read:user user:email repo' },
+      },
     }),
   ],
   pages: {

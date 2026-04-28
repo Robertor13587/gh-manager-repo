@@ -40,11 +40,12 @@ export async function POST(_req: NextRequest) {
     }
 
     const account = await dbUtils.getAccountByProvider(user.id, 'github')
-    if (!account?.access_token) {
+    const accessToken = (account?.accessToken ?? account?.access_token) as string | undefined
+    if (!accessToken) {
       return NextResponse.json({ error: 'GitHub token not found' }, { status: 400 })
     }
 
-    const githubClient = new GitHubClient(account.access_token as string)
+    const githubClient = new GitHubClient(accessToken)
     const repos = await githubClient.getUserRepositories()
 
     const filesToCheck = ['README.md', 'CHANGELOG.md', 'MVP.md', 'RELEASE.md', 'COMPLETED.md']

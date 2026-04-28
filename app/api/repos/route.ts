@@ -83,7 +83,12 @@ export async function POST(_req: NextRequest) {
       await dbUtils.updateRepositoryStatus(dbRepo.id, status, Date.now(), mvpDone, mvpTotal)
     }
 
-    return NextResponse.json({ success: true, repositoriesCount: repos.length })
+    // Remove repos that no longer exist on GitHub
+    const activeFullNames = repos.map((r) => r.full_name)
+    const deleted = await dbUtils.deleteRepositoriesNotIn(user.id, activeFullNames)
+    if (deleted > 0) console.log(`[Sync] Removed ${deleted} deleted repo(s) from DB`)
+
+    return NextResponse.json({ success: true, repositoriesCount: repos.length, deleted })
   } catch (error) {
     console.error('Error syncing repos:', error)
     return NextResponse.json({ error: 'Failed to sync repositories' }, { status: 500 })

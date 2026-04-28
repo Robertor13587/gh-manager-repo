@@ -88,6 +88,17 @@ function parseRepo(r: Record<string, unknown>): Repository {
   }
 }
 
+export async function deleteRepositoriesNotIn(userId: string, fullNames: string[]): Promise<number> {
+  if (fullNames.length === 0) return 0
+  const sql = getDb()
+  const result = await sql`
+    DELETE FROM repositories
+    WHERE user_id = ${userId}
+      AND full_name NOT IN ${sql(fullNames)}
+  `
+  return result.count
+}
+
 export async function getRepositoriesByUserId(userId: string): Promise<Repository[]> {
   const sql = getDb()
   const rows = await sql`

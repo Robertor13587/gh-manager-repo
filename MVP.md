@@ -94,16 +94,6 @@ Creare una piattaforma web funzionale per sincronizzare e tracciare automaticame
 
 ---
 
-## 📋 Post-MVP Considerations
-
-Questi items sono out-of-scope per MVP ma buoni candidati per future versioni:
-
-- [ ] Filtri e ricerca avanzata sulla dashboard
-- [ ] Statistiche e analytics (trends, velocità di completamento)
-- [ ] Custom labels e categorizzazione
-
----
-
 ## 🎯 MVP Success Criteria
 
 - ✅ Users possono fare login con GitHub

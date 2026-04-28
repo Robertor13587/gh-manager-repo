@@ -21,6 +21,8 @@ export interface Repository {
   lastSyncedAt: number | null
   mvpFiles: string[]
   releaseFiles: string[]
+  mvpDone: number
+  mvpTotal: number
   userId: string
 }
 
@@ -146,12 +148,18 @@ export async function upsertRepository(data: {
 export async function updateRepositoryStatus(
   id: string,
   status: string,
-  lastSyncedAt: number = Date.now()
+  lastSyncedAt: number = Date.now(),
+  mvpDone = 0,
+  mvpTotal = 0,
 ): Promise<void> {
   const sql = getDb()
   await sql`
     UPDATE repositories
-    SET status = ${status}, last_synced_at = ${Math.floor(lastSyncedAt / 1000)}, updated_at = ${Math.floor(Date.now() / 1000)}
+    SET status = ${status},
+        last_synced_at = ${Math.floor(lastSyncedAt / 1000)},
+        updated_at = ${Math.floor(Date.now() / 1000)},
+        mvp_done = ${mvpDone},
+        mvp_total = ${mvpTotal}
     WHERE id = ${id}
   `
 }

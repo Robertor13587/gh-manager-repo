@@ -74,7 +74,13 @@ export async function POST(_req: NextRequest) {
       }
 
       const status = determineStatus(fileMap, dbRepo.mvpFiles, dbRepo.releaseFiles)
-      await dbUtils.updateRepositoryStatus(dbRepo.id, status)
+
+      const mvpContent = fileMap['MVP.md'] ?? fileMap['mvp.md'] ?? ''
+      const mvpLines = mvpContent.split('\n').filter((l) => /^[-*]\s+\[[x ]\]/i.test(l.trim()))
+      const mvpDone = mvpLines.filter((l) => /^[-*]\s+\[x\]/i.test(l.trim())).length
+      const mvpTotal = mvpLines.length
+
+      await dbUtils.updateRepositoryStatus(dbRepo.id, status, Date.now(), mvpDone, mvpTotal)
     }
 
     return NextResponse.json({ success: true, repositoriesCount: repos.length })

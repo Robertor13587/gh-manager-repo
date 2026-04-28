@@ -13,6 +13,8 @@ interface Repository {
   url: string
   status: string
   lastSyncedAt: string | null
+  mvpDone: number
+  mvpTotal: number
 }
 
 const SECTIONS: { key: string; label: string; accent: string; badge: string }[] = [
@@ -64,6 +66,21 @@ function RepoCard({ repo, badge }: { repo: Repository; badge: string }) {
 
       {repo.description && (
         <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{repo.description}</p>
+      )}
+
+      {repo.mvpTotal > 0 && (
+        <div className="space-y-1">
+          <div className="flex justify-between text-xs text-gray-400">
+            <span>MVP</span>
+            <span>{repo.mvpDone}/{repo.mvpTotal}</span>
+          </div>
+          <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden">
+            <div
+              className="h-1.5 rounded-full bg-blue-500 transition-all"
+              style={{ width: `${Math.round((repo.mvpDone / repo.mvpTotal) * 100)}%` }}
+            />
+          </div>
+        </div>
       )}
 
       <div className="flex items-center justify-between mt-auto pt-1">

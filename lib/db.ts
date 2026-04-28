@@ -99,6 +99,10 @@ export async function initializeDb() {
     )
   `
 
+  // Add mvp progress columns if they don't exist yet
+  await sql`ALTER TABLE repositories ADD COLUMN IF NOT EXISTS mvp_done INTEGER DEFAULT 0`
+  await sql`ALTER TABLE repositories ADD COLUMN IF NOT EXISTS mvp_total INTEGER DEFAULT 0`
+
   // Indexes
   await sql`CREATE INDEX IF NOT EXISTS idx_repos_user_id ON repositories(user_id)`
   await sql`CREATE INDEX IF NOT EXISTS idx_files_repo_id ON project_files(repository_id)`
